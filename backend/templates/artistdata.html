@@ -1,0 +1,90 @@
+{% extends "navbar.html" %}
+
+{% block title %}
+Add Artist Information
+{% endblock title %}
+
+{% block body %}
+<br>
+<br>
+<br>
+<div class="container mt-4">
+<div class="display-4 text-center text-info">Add Artist Data</div>
+<br>
+<div class="row">
+   <div class="col-md-4">
+ 
+      <div class="card">
+         {% include "message.html" %}
+         <h4 class="text-center">Enter Your Valid Informations</h4>
+         <div class="card-body bg-light">
+
+            <form action="/addartistinfo" method="post">
+             <div class="form-group">
+                <input type="text" class="form-control mt-2" name="Acode" placeholder="Enter the Artist Code" required>
+             </div>
+
+             <div class="form-group">
+                <input type="text" class="form-control mt-2" name="Aname" placeholder="Enter the Artist Name" required>
+             </div> 
+
+             <div class="form-group">
+                <input type="text" class="form-control mt-2" name="Genre" placeholder="Enter the Genre" required>
+             </div>
+
+             <div class="form-group">
+                <input type="number" class="form-control mt-2" name="Records" placeholder="Enter the number of your Records" required>
+             </div>
+
+             <div class="form-group">
+                <input type="text" class="form-control mt-2" name="Label" placeholder="Enter the name of your Label" required>
+            </div>
+
+            <br>
+            <button class="btn btn-info" type="submit">Add</button>
+
+                
+
+
+            </form>
+        
+         </div>
+      
+      </div>
+
+   </div>
+   <div class="col-md-8">
+      <div class="card mb-3">
+         <div class="row g-0">
+            <div class="col-md-4">
+                <img src="static/assets/img/mic.jpg" class="img-fluid rounded-start" alt="..." style="height: 300px; width: auto; object-fit: cover;">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">Your Artist Data</h5>
+                    <div class="card" style="width: 28rem;">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Artist Code:<b> {{postsdata.Acode}} </b></li>
+                            <li class="list-group-item">Artist Name:<b> {{postsdata.Aname}} </b></li>
+                            <li class="list-group-item">Artist Genre:<b> {{postsdata.Genre}} </b></li>
+                            <li class="list-group-item">Artist Records:<b> {{postsdata.Records}} </b></li>
+                            <li class="list-group-item"><a href="/aedit/{{postsdata.id}}"></a><i class="fa-solid fa-pen-to-square"></i>
+                              <a href="/adelete/{{postsdata.id}}"></a><i class="fa-solid fa-trash"></i>
+                              <li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+       </div>
+   </div>
+</div>
+
+</div>
+{% endblock body %}
+
+
+
+<!--uporer Acode, Aname, Genre, Records, Labels eigula miltese kina oita amra main.py file theke dekhe dekhe dekhe thik kore nibo -->

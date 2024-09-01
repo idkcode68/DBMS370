@@ -10,6 +10,9 @@ from flask import session
 
 from flask_mail import Mail
 
+
+# I am getting error like this..AttributeError: 'Engine' object has no attribute 'execute' .  I am using SQLalchemy  2.0.30 version. I googled and found out that  in the new version of SqlAlchemy execute method is not supported any more. Please help me how to correct this.
+
 # my database connection
 local_server = True
 app = Flask(__name__)
@@ -59,11 +62,19 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(100))
     dob = db.Column(db.String(1000))
 
-class artistuser(UserMixin, db.Model):
+class Artistuser(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     Acode = db.Column(db.String(50))
     email = db.Column(db.String(100))
     password = db.Column(db.String(1000))
+
+class Artistdata(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    Acode = db.Column(db.String(20), unique=True)
+    Aname = db.Column(db.String(100))
+    genre = db.Column(db.String(100))
+    records = db.Column(db.Integer)
+    label = db.Column(db.String(100))
 
 @app.route("/")
 def home():
@@ -95,6 +106,7 @@ def signup():
 
         stmt = text("INSERT INTO User (id,name, email, dob) VALUES (:id, :name, :email, :dob)")
         with db.engine.connect() as conn:
+            conn.execute(stmt, {"Acode": Acode, "Aname": Aname, "genre" : genre, "records": records, "label": label})
             conn.execute(stmt, {"id": id, "name": name, "email": email, "dob": encpassword})
         user1=User.query.filter_by(id=id).first()
         if user1 and check_password_hash(user1.dob,dob):
@@ -133,7 +145,7 @@ def artistlogin():
     if request.method == "POST":
         email = request.form.get('email')
         password = request.form.get('password')
-        user=artistuser.query.filter_by(email=email).first()
+        user=Artistuser.query.filter_by(email=email).first()
 
         if user and check_password_hash(user.password,password):
             login_user(user)
@@ -168,7 +180,7 @@ def logout():
     flash("Logout Successful", "warning")
     return redirect(url_for('login'))
 
-
+# eikhane login korte gele kintu jhamela hobe aagei, dekhabe login hobe na ei shei, **eitar solution hoilo google er 2 step verification bondho kora lagbe, bondho kore tarpor try korle tokhon hobe
 # Rename the function to avoid name collision with the model
 @app.route('/addArtistUser', methods=['POST', 'GET'])
 def add_artist_user():
@@ -179,9 +191,10 @@ def add_artist_user():
             email = request.form.get('email')
             password = request.form.get('password')
             encpassword = generate_password_hash(password)
-            
+            Acode=Acode.upper()
+
             # Use the model to query the database
-            emailUser = artistuser.query.filter_by(email=email).first()
+            emailUser = Artistuser.query.filter_by(email=email).first()
             if emailUser:
                 flash("Email is already taken", "warning")
                 return render_template("addArtistUser.html")
@@ -194,7 +207,7 @@ def add_artist_user():
                 'Music Management System',
                 sender=params['gmail-user'],
                 recipients=[email],
-                body=f"Welcome thank you for choosing us\nYour Credentials Are:\nEmail Address: {email}\nPassword: {password}\n\n\n Do not share your information\n\n\n Thanks"
+                body=f"Welcome thank you for choosing us\nYour Credentials Are:\nEmail Address: {email}\nPassword: {password}\n\nHospital Code {Acode}\n Do not share your information\n\n\n Thanks"
             )
             
             flash("Data Inserted", "warning")
@@ -211,6 +224,7 @@ def add_artist_user():
 
 
 # testing whether db is connected or not
+# pore eita try korsi, its actually not connected at all
 @app.route("/test")
 def test():
     try:
@@ -229,6 +243,79 @@ def logoutadmin():
     flash("You are logout admin", "primary")
 
     return redirect('/admin')
+
+
+# @login_required na dile dekhai hoilo  (AttributeError AttributeError: 'AnonymousUserMixin' object has no attribute 'email' Traceback (most recent call last); chatgpt amake ei solution ta dise pore 
+
+@app.route("/addartistinfo", methods=['POST', 'GET'])
+@login_required
+
+def addartistinfo():
+        email = current_user.email
+        posts = Artistuser.query.filter_by(email=email).first()
+        code=posts.Acode
+        postsdata=Artistdata.query.filter_by(Acode=code).first()
+        
+        if request.method == "POST":
+            Acode = request.form.get('Acode')
+            Aname = request.form.get('Aname')
+            genre = request.form.get('Genre')
+            records = request.form.get('Records')
+            label = request.form.get('Label')
+            Acode = Acode.upper()
+
+            auser = Artistuser.query.filter_by(Acode=Acode).first()
+            aduser = Artistdata.query.filter_by(Acode=Acode).first()
+            if aduser:
+                flash("Data is already Present you can update it", "primary")
+                return render_template("artistdata.html")  
+            if auser:
+                stmt = text("INSERT INTO artistdata (Acode, Aname, Genre, Records, Label) VALUES (:Acode, :Aname, :genre, :records, :label)")
+                with db.engine.connect() as conn:
+                    conn.execute(stmt, {"Acode": Acode, "Aname": Aname, "Genre": genre, "Records": records, "Label": label})
+                
+                flash("Data is Added", "primary")
+            else:
+                flash("Artist Code does not exist", "warning")
+             
+
+        return render_template("artistdata.html", postsdata=postsdata)  
+    
+
+ 
+@app.route("/aedit/<string:id>", methods=['POST','GET'])
+@login_required
+def aedit(id):
+    posts=Artistdata.query.filter_by(id=id).first()
+    if request.method == "POST":
+            Acode = request.form.get('Acode')
+            Aname = request.form.get('Aname')
+            genre = request.form.get('Genre')
+            records = request.form.get('Records')
+            label = request.form.get('Label')
+            Acode = Acode.upper()
+            stmt = text("UPDATE artistdata SET Acode=:Acode, Aname=:Aname, Genre=:genre, Records=:records, Label=:label WHERE id=:id")
+            with db.engine.connect() as conn:
+                conn.execute(stmt, {"Acode": Acode, "Aname": Aname, "genre": genre, "records": records, "label": label, "id": id})
+
+            flash("Slot Updated", "danger")
+            return render_template("/addartistinfo")
+
+
+    return render_template("aedit.html",posts=posts)
+
+
+
+@app.route("/adelete/<string:id>", methods=['POST','GET'])
+@login_required
+def adelete(id):
+    stmt = text("DELETE FROM artistdata WHERE id=:id")
+    with db.engine.connect() as conn:
+        conn.execute(stmt, {"id": id})
+
+    flash("Date Deleted", "danger")
+    return redirect("/addartistinfo")
+
 
 
 

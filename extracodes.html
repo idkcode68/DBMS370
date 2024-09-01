@@ -1,0 +1,37 @@
+<!--extra codess  basically before editing arki --> 
+
+
+<!-- from main.py -->
+<!-- 
+def addartistinfo():
+        email = current_user.email
+        posts = Artistuser.query.filter_by(email=email).first()
+        code=posts.Acode
+        postsdata=Artistdata.query.filter_by(Acode=code).first()
+        
+        if request.method == "POST":
+            Acode = request.form.get('Acode')
+            Aname = request.form.get('Aname')
+            genre = request.form.get('Genre')
+            records = request.form.get('Records')
+            label = request.form.get('Label')
+            Acode = Acode.upper()
+
+            auser = Artistuser.query.filter_by(Acode=Acode).first()
+            aduser = Artistdata.query.filter_by(Acode=Acode).first()
+            if aduser:
+                flash("Data is already Present you can update it", "primary")
+                return render_template("artistdata.html")  
+            if auser:
+                stmt = text("INSERT INTO artistdata (Acode, Aname, Genre, Records, Label) VALUES (:Acode, :Aname, :genre, :records, :label)")
+                with db.engine.connect() as conn:
+                    conn.execute(stmt, {"Acode": Acode, "Aname": Aname, "Genre": genre, "Records": records, "Label": label})
+                
+                flash("Data is Added", "primary")
+            else:
+                flash("Artist Code does not exist", "warning")
+            
+            
+
+        return render_template("artistdata.html", postsdata=postsdata)
+ -->
