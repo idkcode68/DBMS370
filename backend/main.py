@@ -72,9 +72,9 @@ class Artistdata(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     Acode = db.Column(db.String(20), unique=True)
     Aname = db.Column(db.String(100))
-    genre = db.Column(db.String(100))
-    records = db.Column(db.Integer)
-    label = db.Column(db.String(100))
+    Genre = db.Column(db.String(100))
+    Records = db.Column(db.Integer)
+    Label = db.Column(db.String(100))
 
 class Trackallot(db.Model):
     id=db.Column(db.Integer,primary_key=True)
@@ -190,6 +190,7 @@ def logout():
 def artistuser():
     
     if 'user' in session and session['user']=="admin":
+        
         if request.method == "POST":
             Acode = request.form.get('Acode')
             email = request.form.get('email')
@@ -205,14 +206,8 @@ def artistuser():
             db.session.add(query)
             db.session.commit()
             
-            # mail.send_message(
-            #     'Music Management System',
-            #     sender=params['gmail-user'],
-            #     recipients=[email],
-            #     body=f"Welcome thank you for choosing us\nYour Credentials Are:\nEmail Address: {email}\nPassword: {password}\n\nHospital Code {Acode}\n Do not share your information\n\n\n Thanks"
-            # )
             
-            flash("Data Inserted", "warning")
+            flash("Data Inserted Successfully", "warning")
             return render_template("addArtistUser.html")
         
         
@@ -252,73 +247,73 @@ def logoutadmin():
 
 @app.route("/addartistinfo", methods=['POST', 'GET'])
 @login_required
-
 def addartistinfo():
-        email = current_user.email
-        posts = Artistuser.query.filter_by(email=email).first()
-        code=posts.Acode
-        postsdata=Artistdata.query.filter_by(Acode=code).first()
-        
-        if request.method == "POST":
-            Acode = request.form.get('Acode')
-            Aname = request.form.get('Aname')
-            genre = request.form.get('Genre')
-            records = request.form.get('Records')
-            label = request.form.get('Label')
-            Acode = Acode.upper()
+    email = current_user.email
+    posts = Artistuser.query.filter_by(email=email).first()
+    code = posts.Acode if posts else None
+    postsdata = Artistdata.query.filter_by(Acode=code).first() if code else None
+    
+    if request.method == "POST":
+        Acode = request.form.get('Acode')
+        Aname = request.form.get('Aname')
+        Genre = request.form.get('Genre')
+        Records = request.form.get('Records')
+        Label = request.form.get('Label')
+        Acode = Acode.upper()
 
-            auser = Artistuser.query.filter_by(Acode=Acode).first()
-            aduser = Artistdata.query.filter_by(Acode=Acode).first()
-            if aduser:
-                flash("Data is already Present you can update it", "primary")
-                return render_template("artistdata.html")  
-            if auser:
-                query=Artistdata(Acode=Acode,Aname=Aname,genre=genre,records=records,label=label)
-                db.session.add(query)
-                db.session.commit()
-                flash("Data is Added", "primary")
-                return redirect('/addartistinfo')
-            else:
-                flash("Artist Code does not exist", "warning")
-                return redirect('/addartistinfo')
+        auser = Artistuser.query.filter_by(Acode=Acode).first()
+        aduser = Artistdata.query.filter_by(Acode=Acode).first()
+        if aduser:
+            flash("Data is already Present you can update it", "primary")
+            return render_template("artistdata.html", postsdata=postsdata)  # Ensure postsdata is passed
+        if auser:
+            query = Artistdata(Acode=Acode, Aname=Aname, Genre=Genre, Records=Records, Label=Label)
+            db.session.add(query)
+            db.session.commit()
+            flash("Data is Added", "primary")
+            return redirect('/addartistinfo')
+        else:
+            flash("Artist Code does not exist", "warning")
+            return redirect('/addartistinfo')
 
-        return render_template("artistdata.html", postsdata=postsdata)  
+    return render_template("artistdata.html", postsdata=postsdata)  # Ensure postsdata is passed
+  
     
 
  
 @app.route("/aedit/<string:id>", methods=['POST','GET'])
 @login_required
 def aedit(id):
-    posts=Artistdata.query.filter_by(id=id).first()
+    posts = Artistdata.query.filter_by(id=id).first()
     if request.method == "POST":
-            Acode = request.form.get('Acode')
-            Aname = request.form.get('Aname')
-            genre = request.form.get('Genre')
-            records = request.form.get('Records')
-            label = request.form.get('Label')
-            Acode = Acode.upper()
-            post=Artistdata.query.filter_by(id=id).first()
-            post.Acode=Acode
-            post.Aname=Aname
-            post.genre=genre
-            post.records=records
-            post.label=label
-            db.session.commit()
-            flash("Slot Updated", "danger")
-            return render_template("/addartistinfo")
+        Acode = request.form.get('Acode')
+        Aname = request.form.get('Aname')
+        Genre = request.form.get('Genre')
+        Records = request.form.get('Records')
+        Label = request.form.get('Label')
+        Acode = Acode.upper()
+        post = Artistdata.query.filter_by(id=id).first()
+        post.Acode = Acode
+        post.Aname = Aname
+        post.Genre = Genre
+        post.Records = Records
+        post.Label = Label
+        db.session.commit()
+        flash("Slot Updated", "danger")
+        # Redirect instead of rendering to avoid the issue
+        return redirect('/addartistinfo')
+
+    return render_template("aedit.html", posts=posts)
 
 
-    return render_template("aedit.html",posts=posts)
-
-
-
-@app.route("/adelete/<string:id>", methods=['POST','GET'])
+@app.route("/adelete/<string:id>",methods=['POST','GET'])
 @login_required
 def adelete(id):
     post=Artistdata.query.filter_by(id=id).first()
     db.session.delete(post)
-    flash("Date Deleted", "danger")
-    return redirect("/addartistinfo")
+    db.session.commit()
+    flash("Date Deleted","danger")
+    return redirect('/addartistinfo')
 
 
 

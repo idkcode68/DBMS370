@@ -68,8 +68,9 @@ Add Artist Information
                             <li class="list-group-item">Artist Name:<b> {{postsdata.Aname}} </b></li>
                             <li class="list-group-item">Artist Genre:<b> {{postsdata.Genre}} </b></li>
                             <li class="list-group-item">Artist Records:<b> {{postsdata.Records}} </b></li>
-                            <li class="list-group-item"><a href="/aedit/{{postsdata.id}}"></a><i class="fa-solid fa-pen-to-square"></i>
-                              <a href="/adelete/{{postsdata.id}}"></a><i class="fa-solid fa-trash"></i>
+                            <li class="list-group-item">Artist Labels:<b> {{postsdata.Label}} </b></li>
+                            <li class="list-group-item"><a href="/aedit/{{postsdata.id}}"> <i class="fas fa-edit"></i></a> </i>
+                              <a class="ml-4" confirm('Are you sure to Delete data'); href="/adelete/{{postsdata.id}}"> <i class="fa-solid fa-trash"></i> </a>
                               <li>
 
                         </ul>
