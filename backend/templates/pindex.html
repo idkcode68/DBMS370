@@ -1,0 +1,55 @@
+{% extends "navbar.html" %}
+
+{% block head %}
+<title>Music Playlist</title>
+{% endblock %}
+
+{% block body %}
+<br>
+<br>
+<br>
+<br>
+<div class="content">
+    <h1 style="text-align: center;">Music Playlist</h1>
+    <br>
+    {% if playlists|length < 1 %}
+    <h4 style="text-align: center; font-style: italic; color: gray;">There are no tracks. Add one below!</h4>
+    {% else %}
+    <table border="1" cellpadding="10" cellspacing="0" width="80%" align="center" style="table-layout: fixed;">
+        <thead>
+            <tr style="background-color: #4CAF50; color: white; text-align: center;">
+                <th style="width: 25%;">Title</th>
+                <th style="width: 25%;">Artist</th>
+                <th style="width: 25%;">Album</th>
+                <th style="width: 15%;">Added</th>
+                <th style="width: 10%;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for playlist in playlists %}
+            <tr style="text-align: center;">
+                <td>{{ playlist.title }}</td>
+                <td>{{ playlist.artist }}</td>
+                <td>{{ playlist.album }}</td>
+                <td>{{ playlist.date_added.date() }}</td>
+                <td>
+                    <a href="/pdelete/{{playlist.id}}" style="color: #4CAF50;">Delete</a>
+                    <br>
+                    <a href="/pupdate/{{playlist.id}}" style="color: #4CAF50;">Update</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <div style="text-align: center; margin-top: 20px;">
+        <form action="/makeplaylist" method="POST">
+            <input type="text" name="title" placeholder="Track Title" required style="padding: 8px; margin-right: 10px;">
+            <input type="text" name="artist" placeholder="Artist" required style="padding: 8px; margin-right: 10px;">
+            <input type="text" name="album" placeholder="Album" required style="padding: 8px; margin-right: 10px;">
+            <input type="submit" value="Add Track" style="padding: 8px 15px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">
+        </form>
+    </div>
+</div>
+{% endblock %}

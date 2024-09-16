@@ -1,42 +1,36 @@
 {% with messages=get_flashed_messages(with_categories=true) %}
 {% if messages %}
-{% for category,message in messages %}
-
-<!--eikahne box ta choto kora lagbe , display box ta beshi boro hoye jacche, like ektu chepta kore jaate flat display taa ashe -->
+{% for category, message in messages %}
 
 <!--begin::Alert-->
-<div class="alert alert-{{category}} bg-light-danger d-flex flex-center flex-column py-10 px-10 px-lg-20 mb-10">
+<div class="alert alert-{{category}} bg-light-danger d-flex flex-center flex-column py-4 px-6 mb-4" style="border-radius: 8px;">
     <!--begin::Close-->
-    <button type="button" class="position-absolute top-0 end-0 m-2 btn btn-icon btn-icon-danger" data-bs-dismiss="alert">
-        <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+    <button type="button" class="position-absolute top-0 end-0 m-2 btn btn-icon btn-icon-danger" data-bs-dismiss="alert" style="padding: 5px;">
+        <i class="ki-duotone ki-cross fs-3"></i>
     </button>
     <!--end::Close-->
 
     <!--begin::Icon-->
-    <i class="ki-duotone ki-information-5 fs-5tx text-danger mb-5"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+    <i class="ki-duotone ki-information-5 fs-2 text-danger mb-2"></i>
     <!--end::Icon-->
 
     <!--begin::Wrapper-->
     <div class="text-center">
         <!--begin::Title-->
-        <h1 class="fw-bold mb-5" style="color: red;">{{message}}</h1>
+        <h4 class="fw-bold mb-3" style="color: red; font-size: 18px;">{{ message }}</h4>
         <!--end::Title-->
 
         <!--begin::Separator-->
-        <div class="separator separator-dashed border-danger opacity-25 mb-5"></div>
+        <div class="separator separator-dashed border-danger opacity-25 mb-3"></div>
         <!--end::Separator-->
 
         <!--begin::Content-->
-        <div class="mb-9 text-gray-900">
-            The alert component can be used to highlight certain parts of your page for <strong>higher content visibility</strong>.<br/>
-            Please read our <a href="#" class="fw-bold me-1">Terms and Conditions</a> for more info.
-        </div>
         <!--end::Content-->
 
         <!--begin::Buttons-->
         <div class="d-flex flex-center flex-wrap">
-            <a href="/" class="btn btn-outline btn-outline-danger btn-active-danger m-2">Cancel</a>
-            <a href="/login" class="btn btn-danger m-2">Ok, I got it</a>
+            <a href="/" class="btn btn-outline btn-outline-danger btn-active-danger m-2" style="padding: 6px 12px;">Cancel</a>
+            <a href="/login" class="btn btn-danger m-2" style="padding: 6px 12px;">Ok, I got it</a>
         </div>
         <!--end::Buttons-->
     </div>
@@ -44,12 +38,6 @@
 </div>
 <!--end::Alert-->
 
-
-
-
 {% endfor %}
 {% endif %}
 {% endwith %}
-
-
- 

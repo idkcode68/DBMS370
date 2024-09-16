@@ -7,6 +7,8 @@ from flask_login import login_required, logout_user, login_user, LoginManager, c
 from sqlalchemy import text
 import json 
 from flask.helpers import url_for
+from datetime import datetime
+from flask_login import current_user
 
 # from flask_mail import Mail
 
@@ -76,19 +78,38 @@ class Artistdata(db.Model):
     Records = db.Column(db.Integer)
     Label = db.Column(db.String(100))
 
-class Trackallot(db.Model):
-    id=db.Column(db.Integer,primary_key=True)
-    name=db.Column(db.String(20),unique=True)
-    genretype=db.Column(db.String(100))
-    Acode=db.Column(db.String(20))
-    duration=db.Column(db.Integer)
-    albumname=db.Column(db.String(100))
-    albumlabel=db.Column(db.String(100))
-    releasedate = db.Column(db.Date)
+
+
+class Playlist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    artist = db.Column(db.String(100), nullable=False)
+    album = db.Column(db.String(100), nullable=True)
+    date_added = db.Column(db.DateTime, default=datetime.utcnow)
+    
+
+    def __repr__(self):
+        return '<Playlist %r>' % self.id
 
 
 
 
+class Concert(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    artist = db.Column(db.String(100))
+    date_added = db.Column(db.DateTime, default=datetime.utcnow)
+    location = db.Column(db.String(100))  
+    
+    def __repr__(self):
+        return '<Concert %r>' % self.id
+
+
+
+
+
+
+# (db.Model) er kaaj ki? 
 
 
 @app.route("/")
@@ -188,32 +209,30 @@ def logout():
 # Rename the function to avoid name collision with the model
 @app.route('/addArtistUser', methods=['POST', 'GET'])
 def artistuser():
-    
-    if 'user' in session and session['user']=="admin":
-        
+    if 'user' in session and session['user'] == "admin":
         if request.method == "POST":
             Acode = request.form.get('Acode')
             email = request.form.get('email')
             password = request.form.get('password')
-            # encpassword = generate_password_hash(password)
-            Acode=Acode.upper()
-            # Use the model to query the database
+            Acode = Acode.upper()
+            
             emailUser = Artistuser.query.filter_by(email=email).first()
             if emailUser:
                 flash("Email is already taken", "warning")
-                
-            query=Artistuser(Acode=Acode,email=email,password=password)
+                return render_template("addArtistUser.html")
+
+            query = Artistuser(Acode=Acode, email=email, password=password)
             db.session.add(query)
             db.session.commit()
             
-            
-            flash("Data Inserted Successfully", "warning")
-            return render_template("addArtistUser.html")
-        
+            flash("Data Inserted Successfully", "success")
+            return redirect('/addArtistUser')
         
     else:
         flash("Login and try Again", "warning")
-        return render_template("addArtistUser.html")
+        return redirect('/login')
+    return render_template("addArtistUser.html")
+
 
 
 
@@ -223,6 +242,11 @@ def artistuser():
 # testing whether db is connected or not
 # pore eita try korsi, its actually not connected at all
 # testing wheather db is connected or not  
+
+with app.app_context():
+    db.create_all()
+
+
 @app.route("/test")
 def test():
     try:
@@ -265,7 +289,7 @@ def addartistinfo():
         aduser = Artistdata.query.filter_by(Acode=Acode).first()
         if aduser:
             flash("Data is already Present you can update it", "primary")
-            return render_template("artistdata.html", postsdata=postsdata)  # Ensure postsdata is passed
+            return render_template("artistdata.html", postsdata=postsdata)
         if auser:
             query = Artistdata(Acode=Acode, Aname=Aname, Genre=Genre, Records=Records, Label=Label)
             db.session.add(query)
@@ -276,15 +300,20 @@ def addartistinfo():
             flash("Artist Code does not exist", "warning")
             return redirect('/addartistinfo')
 
-    return render_template("artistdata.html", postsdata=postsdata)  # Ensure postsdata is passed
+    return render_template("artistdata.html", postsdata=postsdata)
+  # Ensure postsdata is passed
   
     
 
  
-@app.route("/aedit/<string:id>", methods=['POST','GET'])
+@app.route("/aedit/<string:id>", methods=['POST', 'GET'])
 @login_required
 def aedit(id):
-    posts = Artistdata.query.filter_by(id=id).first()
+    post = Artistdata.query.filter_by(id=id).first()
+    if not post:
+        flash("Record not found", "danger")
+        return redirect('/addartistinfo')
+
     if request.method == "POST":
         Acode = request.form.get('Acode')
         Aname = request.form.get('Aname')
@@ -292,30 +321,158 @@ def aedit(id):
         Records = request.form.get('Records')
         Label = request.form.get('Label')
         Acode = Acode.upper()
-        post = Artistdata.query.filter_by(id=id).first()
+        
         post.Acode = Acode
         post.Aname = Aname
         post.Genre = Genre
         post.Records = Records
         post.Label = Label
         db.session.commit()
-        flash("Slot Updated", "danger")
-        # Redirect instead of rendering to avoid the issue
+        flash("Slot Updated", "success")
         return redirect('/addartistinfo')
 
-    return render_template("aedit.html", posts=posts)
+    return render_template("aedit.html", posts=post)
 
 
-@app.route("/adelete/<string:id>",methods=['POST','GET'])
+
+@app.route("/adelete/<string:id>", methods=['POST', 'GET'])
 @login_required
 def adelete(id):
-    post=Artistdata.query.filter_by(id=id).first()
+    post = Artistdata.query.filter_by(id=id).first()
+    if not post:
+        flash("Record not found", "danger")
+        return redirect('/addartistinfo')
+    
     db.session.delete(post)
     db.session.commit()
-    flash("Date Deleted","danger")
+    flash("Data Deleted", "success")
     return redirect('/addartistinfo')
 
 
 
+# playlist_CRUD
 
-app.run(debug=True)
+
+@app.route('/makeplaylist', methods=['POST', 'GET'])
+@login_required
+def makeplaylist():
+    if request.method == 'POST':
+        playlist_title = request.form['title']
+        playlist_artist = request.form['artist']
+        playlist_album = request.form['album']
+        new_playlist = Playlist(title=playlist_title, artist=playlist_artist, album=playlist_album)
+
+        try:
+            db.session.add(new_playlist)
+            db.session.commit()
+            return redirect('/makeplaylist')  # Update the redirect path
+        except:
+            return 'There was an issue adding your track to the playlist'
+
+    else:
+        playlists = Playlist.query.order_by(Playlist.date_added).all()
+        return render_template('pindex.html', playlists=playlists)
+
+
+
+@app.route('/pupdate/<int:id>', methods=['GET', 'POST'])
+@login_required
+def update(id):
+    playlist = Playlist.query.get_or_404(id)
+
+    if request.method == 'POST':
+        playlist.title = request.form['title']
+        playlist.artist = request.form['artist']
+        playlist.album = request.form['album']
+
+        try:
+            db.session.commit()
+            return redirect('/makeplaylist')  
+        except:
+            return 'There was an issue updating your track in the playlist'
+
+    else:
+        return render_template('pupdate.html', playlist=playlist)
+
+
+
+
+
+@app.route('/pdelete/<int:id>')
+@login_required
+def delete(id):
+    playlist_to_delete = Playlist.query.get_or_404(id)
+
+    try:
+        db.session.delete(playlist_to_delete)
+        db.session.commit()
+        return redirect('/makeplaylist')  
+    except:
+        return 'There was a problem deleting that track from the playlist'
+
+
+
+
+
+# take help from the playlist 
+
+
+# Book concert route
+@app.route('/bookconcert', methods=['POST', 'GET'])
+@login_required
+def bookconcert():
+    if request.method == 'POST':
+        concert_name = request.form['name']
+        concert_artist = request.form['artist']
+        concert_location = request.form['location']
+        new_concert_booking = Concert(name=concert_name, artist=concert_artist, location=concert_location)
+
+        try:
+            db.session.add(new_concert_booking)
+            db.session.commit()
+            return redirect('/bookconcert')  # Update the redirect path
+        except:
+            return 'There was an issue booking your concert slot'
+    else:
+        concerts = Concert.query.order_by(Concert.date_added).all()
+        return render_template('cindex.html', concerts=concerts)
+
+
+# Update concert route
+@app.route('/cupdate/<int:id>', methods=['GET', 'POST'])
+@login_required
+def cupdate(id):
+    concert = Concert.query.get_or_404(id)
+
+    if request.method == 'POST':
+        concert.name = request.form['name']
+        concert.artist = request.form['artist']
+        concert.location = request.form['location']
+
+        try:
+            db.session.commit()
+            return redirect('/bookconcert')
+        except:
+            return 'There was an issue updating your concert booking'
+    else:
+        return render_template('cupdate.html', concert=concert)
+
+# Delete concert route
+@app.route('/cdelete/<int:id>')
+@login_required
+def cdelete(id):
+    concert_to_delete = Concert.query.get_or_404(id)
+
+    try:
+        db.session.delete(concert_to_delete)
+        db.session.commit()
+        return redirect('/bookconcert')
+    except:
+        return 'There was a problem deleting the booking slot for the concert'
+
+
+
+
+
+if local_server:
+    app.run(debug=True)

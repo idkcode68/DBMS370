@@ -44,13 +44,9 @@
           <nav id="navmenu" class="navmenu">        
             <ul>
               <li><a href="/" class="active" style="color: #fff;">Home<br></a></li>
-              <li><a href="#about" style="color: #fff;">About</a></li>
-              <li><a href="#services" style="color: #fff;">Services</a></li>
-              <li><a href="#portfolio" style="color: #fff;">Portfolio</a></li>
-              <li><a href="#team" style="color: #fff;">Team</a></li>
               <li class="dropdown">
                 <a href="#" style="color: #fff;">
-                  <span>Sign In</span> <i class="bi bi-chevron-down toggle-dropdown"></i>
+                  <span>Credentials</span> <i class="bi bi-chevron-down toggle-dropdown"></i>
                 </a>
                 <ul style="background-color: #555; padding: 10px; border-radius: 5px;">
                   {% if current_user.is_authenticated %}
@@ -63,7 +59,6 @@
                   {% endif %}
                 </ul>
               </li>
-              <li><a href="#contact" style="color: #fff;">Contact</a></li>
             </ul>
             <i class="mobile-nav-toggle d-xl-none bi bi-list" style="color: #fff;"></i>
           </nav>

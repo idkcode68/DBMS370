@@ -73,8 +73,6 @@
               <a href="/" class="active">Home<br /></a>
             </li>
             <li><a href="#about">About</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#portfolio">Portfolio</a></li>
             <li><a href="#team">Team</a></li>
 
 {% if current_user.is_authenticated and current_user.Acode %}             
@@ -87,9 +85,11 @@
 {% elif current_user.is_authenticated and current_user.name %} 
             <li class="dropdown"><a href="/signup"><span>Welcome {{current_user.email}}</span><i class="bi bi-chevron-down toggle-dropdown"></i></a> 
              <ul>
-               <li><a href="/trackallotment">Tracks Allotment</a></li>
+               <li><a href="/makeplaylist">Create Playlist</a></li>
+               <li><a href="/addartistinfo">Add Artist Data</a></li>
                <li><a href="/logout">Logout</a></li>
              </ul>
+             <li><a href="/bookconcert">Book Your Concert Tickets</a></li>
             </li> 
 
 {% else %} 
@@ -102,19 +102,21 @@
             </li> 
             {% endif %}
 
-            <li><a href="#contact">Contact</a></li>
+            
           </ul>
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
 
-        <a class="btn-getstarted" href="index.html#about">Get Started</a>
+        
       </div>
     </header>
 
     <main class="main">
       <!-- Hero Section -->
       <section id="hero" class="hero section dark-background">
-        <img src="static/assets/img/hero-bg.jpg" alt="" data-aos="fade-in" />
+        <img src="static/assets/img/hip.jpg" alt="" data-aos="fade-in" />
+        
+        
 
         <div class="container">
           <div
@@ -123,67 +125,12 @@
             data-aos-delay="100"
           >
             <div class="col-xl-6 col-lg-8">
-              <h2>Powerful Digital Solutions With GP<span>.</span></h2>
-              <p>We are team of talented digital marketers</p>
+              <h2>Manage artists, playlists, and concerts<span>.</span></h2>
+              
             </div>
           </div>
 
-          <div
-            class="row gy-4 mt-5 justify-content-center"
-            data-aos="fade-up"
-            data-aos-delay="200"
-          >
-            <div
-              class="col-xl-2 col-md-4"
-              data-aos="fade-up"
-              data-aos-delay="300"
-            >
-              <div class="icon-box">
-                <i class="bi bi-binoculars"></i>
-                <h3><a href="">Lorem Ipsum</a></h3>
-              </div>
-            </div>
-            <div
-              class="col-xl-2 col-md-4"
-              data-aos="fade-up"
-              data-aos-delay="400"
-            >
-              <div class="icon-box">
-                <i class="bi bi-bullseye"></i>
-                <h3><a href="">Dolor Sitema</a></h3>
-              </div>
-            </div>
-            <div
-              class="col-xl-2 col-md-4"
-              data-aos="fade-up"
-              data-aos-delay="500"
-            >
-              <div class="icon-box">
-                <i class="bi bi-fullscreen-exit"></i>
-                <h3><a href="">Sedare Perspiciatis</a></h3>
-              </div>
-            </div>
-            <div
-              class="col-xl-2 col-md-4"
-              data-aos="fade-up"
-              data-aos-delay="600"
-            >
-              <div class="icon-box">
-                <i class="bi bi-card-list"></i>
-                <h3><a href="">Magni Dolores</a></h3>
-              </div>
-            </div>
-            <div
-              class="col-xl-2 col-md-4"
-              data-aos="fade-up"
-              data-aos-delay="700"
-            >
-              <div class="icon-box">
-                <i class="bi bi-gem"></i>
-                <h3><a href="">Nemos Enimade</a></h3>
-              </div>
-            </div>
-          </div>
+          
         </div>
       </section>
       <!-- /Hero Section -->
@@ -191,24 +138,111 @@
       {% block body %} {% endblock body %}
     </main>
 
+
+
+
+     <!-- About Section -->
+     <section id="about" class="about section">
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row gy-4">
+          <div class="col-lg-6 order-1 order-lg-2">
+            <img src="static/assets/img/about.jpg" class="img-fluid" alt="">
+          </div>
+          <div class="col-lg-6 order-2 order-lg-1 content">
+            <h3>Music Management System - DBMS Project (Summer 2024 Semester)</h3>
+            <p class="fst-italic">
+              Our project for the summer 2024 semester is the Music Management System, designed to manage artist information, playlists, and concert bookings.
+            </p>
+            <ul>
+              <li><i class="bi bi-check2-all"></i> <span>User Sign-up and Login: Users first sign up and then log in using their username and date of birth.</span></li>
+              <li><i class="bi bi-check2-all"></i> <span>Admin Access: After logging in, users are assigned an artist code. Each artist code corresponds to a unique artist, allowing for registration of the artist's details.</span></li>
+              <li><i class="bi bi-check2-all"></i> <span>Playlist Creation and Concert Booking: Once logged in, users can create playlists and book concert tickets, where they can perform CRUD operations such as create, read, update, and delete entries.</span></li>
+            </ul>
+            <p>
+              We utilized Flask API for the backend and HTML, CSS, and Bootstrap templates for the frontend.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </section><!-- /About Section -->
+
+
+    <!-- Team Section -->
+    <section id="team" class="team section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Team</h2>
+        <p>our Team</p>
+      </div><!-- End Section Title -->
+
+      <div class="container">
+
+        <div class="row gy-4">
+
+          <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
+            <div class="team-member">
+              <div class="member-img">
+                <img src="static/assets/img/team/team-1.jpg" class="img-fluid" alt="">
+                
+              </div>
+              <div class="member-info">
+                <h4>Walter White</h4>
+                <span>Authentication and Artist Information CRUD</span>
+              </div>
+            </div>
+          </div><!-- End Team Member -->
+
+          
+
+          
+
+          <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
+            <div class="team-member">
+              <div class="member-img">
+                <img src="static/assets/img/team/team-4.jpg" class="img-fluid" alt="">
+              </div>
+              <div class="member-info">
+                <h4>Amanda Jepson</h4>
+                <span>Playlist and Concert Booking CRUD</span>
+              </div>
+            </div>
+          </div><!-- End Team Member -->
+
+        </div>
+
+      </div>
+
+    </section><!-- /Team Section -->
+
+
+
+
+
+
+
     <footer id="footer" class="footer dark-background">
       <div class="footer-top">
         <div class="container">
           <div class="row gy-4">
             <div class="col-lg-4 col-md-6 footer-about">
               <a href="index.html" class="logo d-flex align-items-center">
-                <span class="sitename">GP</span>
+                <span class="sitename">San Maria Tunes</span>
               </a>
               <div class="footer-contact pt-3">
-                <p>A108 Adam Street</p>
-                <p>New York, NY 535022</p>
+                <p>224 Progati Sarani Road</p>
+                <p>Badda, Dhaka-1212</p>
                 <p class="mt-3">
-                  <strong>Phone:</strong> <span>+1 5589 55488 55</span>
+                  <strong>Phone:</strong> <span>02222-264051</span>
                 </p>
-                <p><strong>Email:</strong> <span>info@example.com</span></p>
+                <p><strong>Email:</strong> <span>bracu-gened@bracu.ac.bd</span></p>
               </div>
               <div class="social-links d-flex mt-4">
-                <a href=""><i class="bi bi-twitter-x"></i></a>
+                <a href="https://www.youtube.com/watch?v=xvFZjo5PgG0"><i class="bi bi-twitter-x"></i></a>
                 <a href=""><i class="bi bi-facebook"></i></a>
                 <a href=""><i class="bi bi-instagram"></i></a>
                 <a href=""><i class="bi bi-linkedin"></i></a>
@@ -243,22 +277,15 @@
               <ul>
                 <li>
                   <i class="bi bi-chevron-right"></i>
-                  <a href="#"> Web Design</a>
+                  <a href="#"> Music Management</a>
                 </li>
                 <li>
                   <i class="bi bi-chevron-right"></i>
-                  <a href="#"> Web Development</a>
+                  <a href="#"> Playlist Creation</a>
                 </li>
                 <li>
                   <i class="bi bi-chevron-right"></i>
-                  <a href="#"> Product Management</a>
-                </li>
-                <li>
-                  <i class="bi bi-chevron-right"></i> <a href="#"> Marketing</a>
-                </li>
-                <li>
-                  <i class="bi bi-chevron-right"></i>
-                  <a href="#"> Graphic Design</a>
+                  <a href="#"> Booking Concert Tickets</a>
                 </li>
               </ul>
             </div>
@@ -291,21 +318,7 @@
         </div>
       </div>
 
-      <div class="copyright">
-        <div class="container text-center">
-          <p>
-            © <span>Copyright</span> <strong class="px-1 sitename">GP</strong>
-            <span>All Rights Reserved</span>
-          </p>
-          <div class="credits">
-            <!-- All the links in the footer should remain intact. -->
-            <!-- You can delete the links only if you've purchased the pro version. -->
-            <!-- Licensing information: https://bootstrapmade.com/license/ -->
-            <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
-            Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-          </div>
-        </div>
-      </div>
+      
     </footer>
 
     <!-- Scroll Top -->
