@@ -9,6 +9,11 @@ import json
 from flask.helpers import url_for
 from datetime import datetime
 from flask_login import current_user
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
+# Initialize the SQLAlchemy object
+
+
 
 # from flask_mail import Mail
 
@@ -41,6 +46,7 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
 # app.config['SQLALCHEMY_DATABASE_URI']='mysql://root:@localhost/databasename'
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/san_maria_tunes'
 db = SQLAlchemy(app)
 
@@ -86,13 +92,10 @@ class Playlist(db.Model):
     artist = db.Column(db.String(100), nullable=False)
     album = db.Column(db.String(100), nullable=True)
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
-    
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Link to User table
 
     def __repr__(self):
         return '<Playlist %r>' % self.id
-
-
-
 
 class Concert(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -100,7 +103,8 @@ class Concert(db.Model):
     artist = db.Column(db.String(100))
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
     location = db.Column(db.String(100))  
-    
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Link to User table
+
     def __repr__(self):
         return '<Concert %r>' % self.id
 
@@ -360,7 +364,7 @@ def makeplaylist():
         playlist_title = request.form['title']
         playlist_artist = request.form['artist']
         playlist_album = request.form['album']
-        new_playlist = Playlist(title=playlist_title, artist=playlist_artist, album=playlist_album)
+        new_playlist = Playlist(title=playlist_title, artist=playlist_artist, album=playlist_album, user_id=current_user.id)  # Assign current user's ID
 
         try:
             db.session.add(new_playlist)
@@ -368,10 +372,11 @@ def makeplaylist():
             return redirect('/makeplaylist')  # Update the redirect path
         except:
             return 'There was an issue adding your track to the playlist'
-
     else:
-        playlists = Playlist.query.order_by(Playlist.date_added).all()
+        # Filter playlists by the current user's ID
+        playlists = Playlist.query.filter_by(user_id=current_user.id).order_by(Playlist.date_added).all()
         return render_template('pindex.html', playlists=playlists)
+
 
 
 
@@ -379,6 +384,11 @@ def makeplaylist():
 @login_required
 def update(id):
     playlist = Playlist.query.get_or_404(id)
+    
+    # Check if the playlist belongs to the current user
+    if playlist.user_id != current_user.id:
+        flash("You do not have permission to edit this playlist", "danger")
+        return redirect('/makeplaylist')
 
     if request.method == 'POST':
         playlist.title = request.form['title']
@@ -425,7 +435,7 @@ def bookconcert():
         concert_name = request.form['name']
         concert_artist = request.form['artist']
         concert_location = request.form['location']
-        new_concert_booking = Concert(name=concert_name, artist=concert_artist, location=concert_location)
+        new_concert_booking = Concert(name=concert_name, artist=concert_artist, location=concert_location, user_id=current_user.id)  # Assign current user's ID
 
         try:
             db.session.add(new_concert_booking)
@@ -434,8 +444,10 @@ def bookconcert():
         except:
             return 'There was an issue booking your concert slot'
     else:
-        concerts = Concert.query.order_by(Concert.date_added).all()
+        # Filter concerts by the current user's ID
+        concerts = Concert.query.filter_by(user_id=current_user.id).order_by(Concert.date_added).all()
         return render_template('cindex.html', concerts=concerts)
+
 
 
 # Update concert route
@@ -443,6 +455,11 @@ def bookconcert():
 @login_required
 def cupdate(id):
     concert = Concert.query.get_or_404(id)
+    
+    # Check if the concert belongs to the current user
+    if concert.user_id != current_user.id:
+        flash("You do not have permission to edit this concert booking", "danger")
+        return redirect('/bookconcert')
 
     if request.method == 'POST':
         concert.name = request.form['name']
