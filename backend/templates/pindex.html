@@ -21,7 +21,7 @@
                 <th style="width: 25%;">Title</th>
                 <th style="width: 25%;">Artist</th>
                 <th style="width: 25%;">Album</th>
-                <th style="width: 15%;">Added</th>
+                <th style="width: 25%;">Added</th>
                 <th style="width: 10%;">Actions</th>
             </tr>
         </thead>
@@ -33,9 +33,10 @@
                 <td>{{ playlist.album }}</td>
                 <td>{{ playlist.date_added.date() }}</td>
                 <td>
+                    <a href="/pupdate/{{playlist.id}}" style="color: #4CAF50;">Update</a>
                     <a href="/pdelete/{{playlist.id}}" style="color: #4CAF50;">Delete</a>
                     <br>
-                    <a href="/pupdate/{{playlist.id}}" style="color: #4CAF50;">Update</a>
+                    
                 </td>
             </tr>
             {% endfor %}
@@ -51,5 +52,9 @@
             <input type="submit" value="Add Track" style="padding: 8px 15px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">
         </form>
     </div>
+    <div class="text-center mt-4">
+        <a href="/plist" class="btn btn-primary">See your Playlist</a>
+      </div>
+
 </div>
 {% endblock %}

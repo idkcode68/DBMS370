@@ -405,6 +405,13 @@ def delete(id):
         return 'There was a problem deleting that track from the playlist'
 
 
+@app.route('/plist', methods=['GET'])
+@login_required
+def plist():
+    playlists = Playlist.query.filter_by(user_id=current_user.id).order_by(Playlist.date_added).all()
+    return render_template('plist.html', playlists=playlists)
+
+
 
 
 
@@ -470,6 +477,14 @@ def cdelete(id):
         return redirect('/bookconcert')
     except:
         return 'There was a problem deleting the booking slot for the concert'
+
+
+@app.route('/clist', methods=['GET'])
+@login_required
+def clist():
+    concerts = Concert.query.filter_by(user_id=current_user.id).order_by(Concert.date_added).all()
+    
+    return render_template('clist.html', concerts=concerts)
 
 
 
