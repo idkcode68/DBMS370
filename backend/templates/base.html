@@ -78,8 +78,9 @@
 {% if current_user.is_authenticated and current_user.Acode %}             
             <li class="dropdown"><a href="/signup"><span>Welcome {{current_user.email}}</span><i class="bi bi-chevron-down toggle-dropdown"></i></a>
               <ul>
-                <li><a href="/addartistinfo">Add Artist Data</a></li>
-                <li><a href="/logout">Logout</a></li>
+               <li><a href="/makeplaylist">Create Playlist</a></li>
+               <li><a href="/addartistinfo">Add Artist Data</a></li>
+               <li><a href="/logout">Logout</a></li>
               </ul>
             </li>  
 {% elif current_user.is_authenticated and current_user.name %} 
@@ -95,9 +96,8 @@
 {% else %} 
            <li class="dropdown"><a href="#"><span>Sign In</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
              <ul>
-               <li><a href="/userlogin">User Login</a></li>
+               <li><a href="/userlogin">User Artist Login</a></li>
                <li><a href="/admin">Admin Login</a></li>
-               <li><a href="/artistlogin">Artist Login</a></li>
              </ul>
             </li> 
             {% endif %}

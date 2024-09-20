@@ -18,7 +18,7 @@ from sqlalchemy.orm import relationship
 # from flask_mail import Mail
 
 
-# I am getting error like this..AttributeError: 'Engine' object has no attribute 'execute' .  I am using SQLalchemy  2.0.30 version. I googled and found out that  in the new version of SqlAlchemy execute method is not supported any more. Please help me how to correct this.
+
 
 # my database connection
 local_server = True
@@ -26,19 +26,6 @@ app = Flask(__name__)
 app.secret_key = "qwerty"
 
 
-# with open('config.json', 'r') as c:
-#     params=json.load(c)["params"]
-
-
-
-# app.config.update(
-#     MAIL_SERVER='smtp.gmail.com',
-#     MAIL_PORT='465',
-#     MAIL_USE_SSL=True,
-#     MAIL_USERNAME=params['gmail-user'],
-#     MAIL_PASSWORD=params['gmail-password']
-# )
-# mail = Mail(app)
 
 
 # this is for getting the unique user access
@@ -112,8 +99,7 @@ class Concert(db.Model):
 
 
 
-
-# (db.Model) er kaaj ki? 
+ 
 
 
 @app.route("/")
@@ -147,7 +133,7 @@ def signup():
         return render_template("userlogin.html")
 
     return render_template("usersignup.html")
-    # eikhane thik eki ee bhabe flash use kore amader message ta dibo, then dewar por oita amader index or home ee redirect hobe (index ee dewa tai beshi better)
+    
 
 
 
@@ -209,7 +195,7 @@ def logout():
     flash("Logout Successful", "warning")
     return redirect(url_for('login'))
 
-# eikhane login korte gele kintu jhamela hobe aagei, dekhabe login hobe na ei shei, **eitar solution hoilo google er 2 step verification bondho kora lagbe, bondho kore tarpor try korle tokhon hobe
+
 # Rename the function to avoid name collision with the model
 @app.route('/addArtistUser', methods=['POST', 'GET'])
 def artistuser():
@@ -244,8 +230,7 @@ def artistuser():
 
 
 # testing whether db is connected or not
-# pore eita try korsi, its actually not connected at all
-# testing wheather db is connected or not  
+
 
 with app.app_context():
     db.create_all()
@@ -271,7 +256,6 @@ def logoutadmin():
     return redirect('/admin')
 
 
-# @login_required na dile dekhai hoilo  (AttributeError AttributeError: 'AnonymousUserMixin' object has no attribute 'email' Traceback (most recent call last); chatgpt amake ei solution ta dise pore 
 
 @app.route("/addartistinfo", methods=['POST', 'GET'])
 @login_required
