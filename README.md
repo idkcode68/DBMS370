@@ -31,5 +31,4 @@ Instructions on how to set up and run the project will be added soon.
 
 
 
-[Team Member 1]
-[Team Member 2]
+
