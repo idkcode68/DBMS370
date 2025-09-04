@@ -29,6 +29,6 @@ Getting Started
 
 Instructions on how to set up and run the project will be added soon.
 
-
+Thank you!
 
 
